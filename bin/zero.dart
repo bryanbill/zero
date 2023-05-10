@@ -101,12 +101,14 @@ void main() {
   );
 
   zero.run();
+
+  print('Listening on port \${zero.port}');
 }
 
 class IndexController extends Controller {
   IndexController(Request request) : super(request);
 
-  @Path('/hello')
+  @Path('/')
   static Response hello(Request request) {
     return Response.ok('Hello world!');
   }

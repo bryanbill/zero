@@ -27,11 +27,6 @@ cd my_project
 zero run
 ```
 
-## Features
-
-- [x] Fast and lightweight
-- [x] Simple and easy to use
-
 ## Examples
 
 ### Hello World
@@ -115,12 +110,7 @@ void main(){
 
 ```
 
-### Currently in development
 
-- [ ] Middlewares
-- [ ] Static files
-- [ ] Websockets
-- [ ] Tests
 
 ## Contributing
 

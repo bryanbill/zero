@@ -1,6 +1,6 @@
 name: zero
 description: A fast, simple, and lightweight backend framework for Dart.
-version: 0.1.0
+version: 0.1.0-dev.1
 repository: https://github.com/bryanbill/zero
 
 environment:

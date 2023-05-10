@@ -7,7 +7,9 @@ Zero is a fast and lightweight **Dart** backend framework.
 Activate the Zero CLI tool:
 
 ```bash
-dart pub global activate zero
+dart pub global activate --source git https://github.com/bryanbill/zero
+# Or using -sgit
+dart pub global activate -sgit https://github.com/bryanbill/zero
 ```
 
 Create a new project:

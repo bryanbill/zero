@@ -75,7 +75,9 @@ main: lib/main.dart
 environment:
   sdk: '>=2.12.0 <3.0.0'
 dependencies:
-  zero: ^0.1.0
+  zero:
+    git:
+      url: https://github.com/bryanbill/zero 
 
 dev_dependencies:
   lint: ^2.0.0

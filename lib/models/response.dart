@@ -27,16 +27,13 @@ import 'dart:io';
 class Response {
   final int statusCode;
   final Object? body;
-  final Map<String, String> headers;
+  final Map<String, String>? headers;
   final List<Cookie>? cookies;
 
   Response({
     this.statusCode = 200,
-    this.body = const {},
-    this.headers = const {
-      'Content-Type': 'application/json',
-      "Accept": "application/json"
-    },
+    this.body,
+    this.headers,
     this.cookies = const [],
   });
 
@@ -44,7 +41,10 @@ class Response {
   factory Response.ok([Object? body, Map<String, String>? headers]) => Response(
         statusCode: 200,
         body: body ?? {},
-        headers: headers ?? {},
+        headers: headers ??
+            {
+              'Content-Type': 'application/json',
+            },
       );
 
   /// Returns a Response with a status code of 201.
@@ -95,15 +95,20 @@ class Response {
 
   /// Sends the response to the client.
   void send(HttpRequest request) {
-    headers.forEach((key, value) {
+    headers?.forEach((key, value) {
       request.response.headers.add(key, value);
     });
 
+    print(headers?['Content-Type']);
+
+    final data = headers?['Content-Type'] == 'application/json'
+        ? jsonEncode(body)
+        : body;
+
     request.response
-      ..headers.contentType = ContentType.json
       ..statusCode = statusCode
-      ..cookies.addAll(cookies!)
-      ..write(jsonEncode(body))
+      ..cookies.addAll(cookies ?? [])
+      ..write(data)
       ..close();
   }
 }

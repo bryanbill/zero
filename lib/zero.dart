@@ -20,3 +20,4 @@ export 'package:zero/core/controller.dart';
 
 export 'package:zero/models/response.dart';
 export 'package:zero/models/request.dart';
+export 'package:zero/models/annotations.dart';

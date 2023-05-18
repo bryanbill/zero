@@ -150,7 +150,7 @@ abstract class Controller {
 
       request.body = jsonDecode(await request.app!
           .transform(StreamTransformer.castFrom(splitDecoded))
-          .join());
+          .join()) as Map<String, dynamic>;
 
       final instanceMirror = _classMirror?.invoke(
         _methodMirror!.simpleName,

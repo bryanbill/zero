@@ -157,13 +157,13 @@ abstract class Controller {
           .join();
       var body =
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
-     
+
       if (bodyMetaData.isNotEmpty) {
         final requiredFields = bodyMetaData.first.fields
             .where((field) => field.isRequired ?? false)
             .map((field) => field.name)
             .toList();
-        
+
         if(requiredFields.isNotEmpty){
           final missingFields = requiredFields.where((field) => !body.containsKey(field)).toList();
           if(missingFields.isNotEmpty){

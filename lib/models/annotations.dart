@@ -14,7 +14,7 @@ class Body {
   const Body(this.fields);
 
   @override
-  String toString() { 
+  String toString() {
     return 'Body{field: $fields}';
   }
 }

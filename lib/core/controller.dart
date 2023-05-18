@@ -147,10 +147,13 @@ abstract class Controller {
 
       final splitDecoded = StreamTransformer<List<int>, String>.fromBind(
           (stream) => stream.transform(utf8.decoder).transform(LineSplitter()));
-
-      request.body = jsonDecode(await request.app!
+      final body = await request.app!
           .transform(StreamTransformer.castFrom(splitDecoded))
-          .join()) as Map<String, dynamic>;
+          .join();
+        
+      request.body =
+          jsonDecode(body.isEmpty ? "{}" : body) as Map<String, dynamic>;
+
 
       final instanceMirror = _classMirror?.invoke(
         _methodMirror!.simpleName,
@@ -168,7 +171,7 @@ abstract class Controller {
     } catch (e) {
       print(e);
       print(StackTrace.current);
-      Response.notFound().send(request.app!);
+      Response.internalServerError().send(request.app!);
     }
   }
 }

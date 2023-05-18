@@ -145,15 +145,85 @@ abstract class Controller {
         ); // Err-1
       }
 
+      // get Body annotation
+      final bodyMetaData = _methodMirror!.metadata
+          .where((metadataMirror) => metadataMirror.reflectee is Body)
+          .map((metadataMirror) => metadataMirror.reflectee as Body)
+          .toList();
       final splitDecoded = StreamTransformer<List<int>, String>.fromBind(
           (stream) => stream.transform(utf8.decoder).transform(LineSplitter()));
-      final body = await request.app!
+      final rawBody = await request.app!
           .transform(StreamTransformer.castFrom(splitDecoded))
           .join();
+      var body =
+          jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
+     
+      if (bodyMetaData.isNotEmpty) {
+        final requiredFields = bodyMetaData.first.fields
+            .where((field) => field.isRequired ?? false)
+            .map((field) => field.name)
+            .toList();
         
-      request.body =
-          jsonDecode(body.isEmpty ? "{}" : body) as Map<String, dynamic>;
+        if(requiredFields.isNotEmpty){
+          final missingFields = requiredFields.where((field) => !body.containsKey(field)).toList();
+          if(missingFields.isNotEmpty){
+            throw Exception(
+              'Missing required fields: ${missingFields.join(', ')}',
+            );
+          }
+        }
 
+        final fields = bodyMetaData.first.fields;
+
+        for (var field in fields) {
+          final value = body[field.name];
+          if (value != null) {
+            if (field.type == String && value is! String) {
+              throw Exception(
+                'Field ${field.name} should be of type String',
+              );
+            } else if (field.type == int && value is! int) {
+              throw Exception(
+                'Field ${field.name} should be of type int',
+              );
+            } else if (field.type == double && value is! double) {
+              throw Exception(
+                'Field ${field.name} should be of type double',
+              );
+            } else if (field.type == bool && value is! bool) {
+              throw Exception(
+                'Field ${field.name} should be of type bool',
+              );
+            } else if (field.type == List && value is! List) {
+              throw Exception(
+                'Field ${field.name} should be of type List',
+              );
+            } else if (field.type == Map && value is! Map) {
+              throw Exception(
+                'Field ${field.name} should be of type Map',
+              );
+            }
+          }
+        }
+
+        //if pattern is provided, validate the field
+        for (var field in fields) {
+          final value = body[field.name];
+          if (value != null) {
+            if (field.pattern != null) {
+              final regExp = RegExp(field.pattern!);
+              if (!regExp.hasMatch(value)) {
+                throw Exception(
+                  'Field ${field.name} should match the pattern ${field.pattern}',
+                );
+              }
+            }
+          }
+        }
+      }
+
+      request.body =
+          jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
 
       final instanceMirror = _classMirror?.invoke(
         _methodMirror!.simpleName,

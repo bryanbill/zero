@@ -150,7 +150,7 @@ abstract class Controller {
       final body = await request.app!
           .transform(StreamTransformer.castFrom(splitDecoded))
           .join();
-        
+
       request.body =
           jsonDecode(body.isEmpty ? "{}" : body) as Map<String, dynamic>;
 

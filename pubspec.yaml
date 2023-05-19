@@ -6,7 +6,7 @@ repository: https://github.com/bryanbill/zero
 environment:
   sdk: ^3.0.0-417.2.beta
 
-executables: 
+executables:
   zero: zero
 
 dependencies:

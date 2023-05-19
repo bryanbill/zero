@@ -225,9 +225,9 @@ abstract class Controller {
       request.body =
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
 
-      final instanceMirror = _classMirror?.invoke(
+      final instanceMirror = _classMirror?.newInstance(Symbol.empty, _positionalArgs ?? []).invoke(
         _methodMirror!.simpleName,
-        _positionalArgs ?? [],
+        [],
       );
 
       if (instanceMirror != null) {

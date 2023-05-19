@@ -17,6 +17,7 @@
 export 'package:zero/core/server.dart';
 export 'package:zero/models/route.dart';
 export 'package:zero/core/controller.dart';
+export 'package:zero/core/middleware.dart';
 
 export 'package:zero/models/response.dart';
 export 'package:zero/models/request.dart';

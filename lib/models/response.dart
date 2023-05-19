@@ -49,7 +49,9 @@ class Response {
 
   /// Returns a Response with a status code of 201.
   factory Response.created([Object? body, Map<String, String>? headers]) =>
-      Response(statusCode: 201, body: body ?? {}, headers: headers ?? {});
+      Response(statusCode: 201, body: body ?? {}, headers: headers ?? {
+        'Content-Type': 'application/json',
+      });
 
   /// Returns a Response with a status code of 400.
   factory Response.badRequest([Object? body, Map<String, String>? headers]) =>
@@ -98,8 +100,6 @@ class Response {
     headers?.forEach((key, value) {
       request.response.headers.add(key, value);
     });
-
-    print(headers?['Content-Type']);
 
     final data = headers?['Content-Type'] == 'application/json'
         ? jsonEncode(body)

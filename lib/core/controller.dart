@@ -145,6 +145,21 @@ abstract class Controller {
         ); // Err-1
       }
 
+      // get annotations whose type is Middleware
+      final middlewareMetaData = _methodMirror!.metadata
+          .where((metadataMirror) => metadataMirror.reflectee is Middleware)
+          .map((metadataMirror) => metadataMirror.reflectee as Middleware)
+          .toList();
+
+      if (middlewareMetaData.isNotEmpty) {
+        for (final middleware in middlewareMetaData) {
+          final res = await middleware.handle(request);
+          if (res.response != null) {
+            return res.response!.send(request.app!);
+          }
+        }
+      }
+
       // get Body annotation
       final bodyMetaData = _methodMirror!.metadata
           .where((metadataMirror) => metadataMirror.reflectee is Body)
@@ -164,9 +179,11 @@ abstract class Controller {
             .map((field) => field.name)
             .toList();
 
-        if(requiredFields.isNotEmpty){
-          final missingFields = requiredFields.where((field) => !body.containsKey(field)).toList();
-          if(missingFields.isNotEmpty){
+        if (requiredFields.isNotEmpty) {
+          final missingFields = requiredFields
+              .where((field) => !body.containsKey(field))
+              .toList();
+          if (missingFields.isNotEmpty) {
             throw Exception(
               'Missing required fields: ${missingFields.join(', ')}',
             );
@@ -225,9 +242,10 @@ abstract class Controller {
       request.body =
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
 
-      final instanceMirror = _classMirror?.invoke(
+      final instanceMirror =
+          _classMirror?.newInstance(Symbol.empty, _positionalArgs ?? []).invoke(
         _methodMirror!.simpleName,
-        _positionalArgs ?? [],
+        [],
       );
 
       if (instanceMirror != null) {

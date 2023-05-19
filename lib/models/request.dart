@@ -53,6 +53,9 @@ class Request {
   /// Contains the request URL.
   final String? url;
 
+  /// Headers
+  final Map<String, String>? headers;
+
   Request({
     this.app,
     this.baseUrl,
@@ -66,6 +69,7 @@ class Request {
     this.route,
     this.subdomains,
     this.url,
+    this.headers,
   });
 
   /// Returns a Request object from an [HttpRequest].
@@ -75,6 +79,10 @@ class Request {
   /// Request.fromHttpRequest(request);
   /// ```
   factory Request.fromHttpRequest(HttpRequest request) {
+    final tempHeaders = <String, String>{};
+    request.headers.forEach((key, value) {
+      tempHeaders[key] = value.join(',');
+    });
     return Request(
       app: request,
       baseUrl: request.uri.toString(),
@@ -87,6 +95,7 @@ class Request {
       route: request.uri.path,
       subdomains: request.uri.host.split('.'),
       url: request.uri.path.toString(),
+      headers: tempHeaders,
     );
   }
 

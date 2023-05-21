@@ -33,7 +33,7 @@ import 'package:zero/zero.dart';
 
 abstract class Controller {
   static final _classMirrorCache = <Type, ClassMirror>{};
-  final Request request;
+  Request request;
 
   ClassMirror? _classMirror;
   MethodMirror? _methodMirror;
@@ -78,6 +78,9 @@ abstract class Controller {
     final method = request.method?.toUpperCase();
     var methodMap = pathMethodMap[path];
 
+    /// If the method map is null, then the path may contain path parameters.
+    /// If the path contains path parameters, then we need to check if the
+    /// request path matches the path of the controller method.
     if (methodMap == null) {
       final paramMetaData = classMirror.declarations.values
           .whereType<MethodMirror>()
@@ -114,7 +117,10 @@ abstract class Controller {
         }
 
         if (pathParams.length == params.length) {
-          request.params = pathParams;
+          request.params = {
+            ...pathParams,
+            ...request.params ?? {},
+          };
           methodMap = pathMethodMap[route];
           break;
         }
@@ -145,6 +151,7 @@ abstract class Controller {
         ); // Err-1
       }
 
+      /// MIDDLEWARE
       // get annotations whose type is Middleware
       final middlewareMetaData = _methodMirror!.metadata
           .where((metadataMirror) => metadataMirror.reflectee is Middleware)
@@ -155,12 +162,16 @@ abstract class Controller {
         for (final middleware in middlewareMetaData) {
           final res = await middleware.handle(request);
           if (res.response != null) {
-            return res.response!.send(request.app!);
+            res.response!.send(request.app!);
+            return;
+          } else {
+            request = res.request ?? request;
           }
         }
       }
 
-      // get Body annotation
+      /// BODY PARSER
+      /// get annotations whose type is Body
       final bodyMetaData = _methodMirror!.metadata
           .where((metadataMirror) => metadataMirror.reflectee is Body)
           .map((metadataMirror) => metadataMirror.reflectee as Body)
@@ -172,7 +183,7 @@ abstract class Controller {
           .join();
       var body =
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
-
+  
       if (bodyMetaData.isNotEmpty) {
         final requiredFields = bodyMetaData.first.fields
             .where((field) => field.isRequired ?? false)
@@ -190,8 +201,8 @@ abstract class Controller {
           }
         }
 
+        /// VALIDATE BODY
         final fields = bodyMetaData.first.fields;
-
         for (var field in fields) {
           final value = body[field.name];
           if (value != null) {
@@ -239,9 +250,13 @@ abstract class Controller {
         }
       }
 
-      request.body =
-          jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
+      request.body = body;
 
+      /// APPEND BODY TO REQUEST, INCLUDES MIDDLWARE BODY
+      request.body?.addAll(
+          jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>);
+
+ 
       final instanceMirror =
           _classMirror?.newInstance(Symbol.empty, _positionalArgs ?? []).invoke(
         _methodMirror!.simpleName,

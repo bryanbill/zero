@@ -70,6 +70,8 @@ class Request {
     this.subdomains,
     this.url,
     this.headers,
+    this.params,
+    this.query,
   });
 
   /// Returns a Request object from an [HttpRequest].
@@ -85,6 +87,7 @@ class Request {
     });
     return Request(
       app: request,
+      query: request.uri.queryParameters,
       baseUrl: request.uri.toString(),
       cookies: request.cookies,
       hostname: request.uri.host,
@@ -96,6 +99,42 @@ class Request {
       subdomains: request.uri.host.split('.'),
       url: request.uri.path.toString(),
       headers: tempHeaders,
+    );
+  }
+
+  Request copyWith({
+    HttpRequest? app,
+    String? baseUrl,
+    Map<String, dynamic>? body,
+    List<Cookie?>? cookies,
+    String? hostname,
+    String? ip,
+    String? method,
+    String? originalUrl,
+    Map<String, dynamic>? params,
+    String? protocol,
+    Map<String, dynamic>? query,
+    String? route,
+    List<String>? subdomains,
+    String? url,
+    Map<String, String>? headers,
+  }) {
+    return Request(
+      app: app ?? this.app,
+      baseUrl: baseUrl ?? this.baseUrl,
+      body: body ?? this.body,
+      cookies: cookies ?? this.cookies,
+      hostname: hostname ?? this.hostname,
+      ip: ip ?? this.ip,
+      method: method ?? this.method,
+      originalUrl: originalUrl ?? this.originalUrl,
+      params: params ?? this.params,
+      protocol: protocol ?? this.protocol,
+      query: query ?? this.query,
+      route: route ?? this.route,
+      subdomains: subdomains ?? this.subdomains,
+      url: url ?? this.url,
+      headers: headers ?? this.headers,
     );
   }
 

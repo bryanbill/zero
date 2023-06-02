@@ -73,7 +73,7 @@ version: 0.0.1
 description: A zero project
 main: lib/main.dart
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 dependencies:
   zero:
     git:
@@ -94,7 +94,7 @@ void main() {
   final zero = Server(
     routes: [
       Route(
-        path: '/hello',
+        path: '/',
         controller: (req) => IndexController(req)
       )
     ]
@@ -109,7 +109,7 @@ class IndexController extends Controller {
   IndexController(Request request) : super(request);
 
   @Path('/')
-  static Response hello(Request request) {
+  Response hello() {
     return Response.ok('Hello world!');
   }
 }

@@ -7,7 +7,7 @@ import 'controller/test_controller.dart';
 void main() {
   late Server zero;
 
-  setUp(() {
+  setUpAll(() {
     zero = Server(
       port: 8080,
       routes: [
@@ -31,7 +31,7 @@ void main() {
     });
   });
 
-  tearDown(() {
+  tearDownAll(() {
     zero.stop(zero.server);
   });
 }

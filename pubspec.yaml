@@ -4,7 +4,7 @@ version: 0.3.2-dev.3
 repository: https://github.com/bryanbill/zero
 
 environment:
-  sdk: ^3.0.0-417.2.beta
+  sdk: ">=3.0.0"
 
 executables:
   zero: zero

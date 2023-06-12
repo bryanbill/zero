@@ -1,0 +1,24 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Zero",
+            "database": "one",
+            "username": "bryanbill",
+            "password": "kawasaki"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Tunza",
+            "database": "tunza",
+            "username": "bryanbill",
+            "password": "kawasaki1045"
+        }
+    ]
+}

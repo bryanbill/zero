@@ -1,18 +1,17 @@
 import 'dart:io';
 
-class Env {
+class Meta {
   final String? path;
 
-  Env({this.path}){
-    _env = _loadEnv();
-  }
+  const Meta({this.path});
 
-  Map<String, dynamic> get env => _env;
-
-  Map<String, dynamic> _env = {};
+  Map<String, dynamic> get env => _loadEnv();
 
   Map<String, dynamic> _loadEnv() {
     final file = File(path ?? '.env');
+    if (!file.existsSync()) {
+      return {};
+    }
     final lines = file.readAsLinesSync();
     final env = <String, dynamic>{};
     for (final line in lines) {
@@ -30,3 +29,5 @@ class Env {
     return env;
   }
 }
+
+const meta = Meta();

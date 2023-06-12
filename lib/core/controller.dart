@@ -91,6 +91,7 @@ abstract class Controller {
               .where((metadataMirror) => metadataMirror.reflectee is Param)
               .first
               .reflectee as Param);
+      print(paramMetaData);
 
       for (var route in pathMethodMap.keys) {
         final params = paramMetaData.first.params;
@@ -183,7 +184,7 @@ abstract class Controller {
           .join();
       var body =
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>;
-  
+
       if (bodyMetaData.isNotEmpty) {
         final requiredFields = bodyMetaData.first.fields
             .where((field) => field.isRequired ?? false)
@@ -256,7 +257,6 @@ abstract class Controller {
       request.body?.addAll(
           jsonDecode(rawBody.isEmpty ? "{}" : rawBody) as Map<String, dynamic>);
 
- 
       final instanceMirror =
           _classMirror?.newInstance(Symbol.empty, _positionalArgs ?? []).invoke(
         _methodMirror!.simpleName,

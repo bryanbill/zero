@@ -36,7 +36,7 @@ class Server {
       this.cors = const {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
+        'Access-Control-Allow-Headers': 'Origin, Content-Type'
       }});
 
   void run() async {
@@ -61,7 +61,11 @@ class Server {
           ),
         );
 
-        route.controller(Request.fromHttpRequest(request)).exec();
+        route
+            .controller(Request.fromHttpRequest(request
+              ..response
+              ..headers.addAll(cors!)))
+            .exec();
       },
     );
   }

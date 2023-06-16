@@ -144,7 +144,7 @@ abstract class Controller {
   ///
   /// This method will throw an [Exception] if the controller method is not found.
 
-  Future<void> exec() async {
+  Future<void> exec([Map<String, dynamic>? payload]) async {
     try {
       if (_classMirror == null || _methodMirror == null) {
         throw Exception(
@@ -265,7 +265,7 @@ abstract class Controller {
 
       if (instanceMirror != null) {
         final response = await instanceMirror.reflectee as Response;
-        response.send(request.app!);
+        response.send(request.app!, payload);
         return;
       }
       throw Exception(
@@ -274,7 +274,7 @@ abstract class Controller {
     } catch (e) {
       print(e);
       print(StackTrace.current);
-      Response.internalServerError().send(request.app!);
+      Response.internalServerError().send(request.app!, payload);
     }
   }
 }

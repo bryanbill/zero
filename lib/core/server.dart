@@ -61,11 +61,9 @@ class Server {
           ),
         );
 
-        route
-            .controller(Request.fromHttpRequest(request
-              ..response
-              ..headers.addAll(cors!)))
-            .exec();
+        route.controller(Request.fromHttpRequest(request)).exec({
+          'cors': cors,
+        });
       },
     );
   }

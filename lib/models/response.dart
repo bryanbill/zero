@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:zero/utils/extensions.dart';
+
 /// A class that represents a response to an HTTP request.
 ///
 /// Example:
@@ -49,9 +51,13 @@ class Response {
 
   /// Returns a Response with a status code of 201.
   factory Response.created([Object? body, Map<String, String>? headers]) =>
-      Response(statusCode: 201, body: body ?? {}, headers: headers ?? {
-        'Content-Type': 'application/json',
-      });
+      Response(
+          statusCode: 201,
+          body: body ?? {},
+          headers: headers ??
+              {
+                'Content-Type': 'application/json',
+              });
 
   /// Returns a Response with a status code of 400.
   factory Response.badRequest([Object? body, Map<String, String>? headers]) =>
@@ -96,10 +102,10 @@ class Response {
           headers: headers ?? {'Content-Type': 'application/json'});
 
   /// Sends the response to the client.
-  void send(HttpRequest request) {
-    headers?.forEach((key, value) {
-      request.response.headers.add(key, value);
-    });
+  void send(HttpRequest request, [Map<String, dynamic>? payload]) {
+    request.response.headers
+      ..addAll(headers ?? {})
+      ..addAll(payload?['cors'] ?? {});
 
     final data = headers?['Content-Type'] == 'application/json'
         ? jsonEncode(body)

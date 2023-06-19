@@ -29,15 +29,7 @@ class Server {
 
   HttpServer get server => _server;
 
-  Server(
-      {this.port = 8080,
-      this.host,
-      required this.routes,
-      this.cors = const {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type'
-      }});
+  Server({this.port = 8080, this.host, required this.routes, this.cors});
 
   void run() async {
     _server = await HttpServer.bind(host ?? InternetAddress.anyIPv4, port!);
@@ -47,7 +39,7 @@ class Server {
         if (request.method == 'OPTIONS') {
           request.response
             ..statusCode = HttpStatus.ok
-            ..headers.addAll(cors!)
+            ..headers.addAll(cors ?? {})
             ..close();
           return;
         }

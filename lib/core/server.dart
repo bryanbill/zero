@@ -34,13 +34,14 @@ class Server {
   void run() async {
     _server = await HttpServer.bind(host ?? InternetAddress.anyIPv4, port!);
     _server.listen(
-      (request) {
+      (request) async {
         // Preflight request
         if (request.method == 'OPTIONS') {
           request.response
             ..statusCode = HttpStatus.ok
-            ..headers.addAll(cors ?? {})
-            ..close();
+            ..headers.addAll(cors ?? {});
+
+          await request.response.close();
           return;
         }
         final path = request.uri.path.split('/');
@@ -53,7 +54,7 @@ class Server {
           ),
         );
 
-        route.controller(Request.fromHttpRequest(request)).exec({
+        await route.controller(Request.fromHttpRequest(request)).exec({
           'cors': cors,
         });
       },

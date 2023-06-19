@@ -39,7 +39,9 @@ class Server {
         if (request.method == 'OPTIONS') {
           request.response
             ..statusCode = HttpStatus.ok
-            ..headers.addAll(cors ?? {})
+            ..headers.addAll((cors ?? {})
+              ..removeWhere(
+                  (key, value) => key == "Access-Control-Allow-Credentials"))
             ..close();
           return;
         }

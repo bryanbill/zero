@@ -37,12 +37,9 @@ class Server {
       (request) {
         // Preflight request
         if (request.method == 'OPTIONS') {
-          var preCors = (cors ?? {})
-            ..removeWhere(
-                (key, value) => key == "Access-Control-Allow-Credentials");
           request.response
             ..statusCode = HttpStatus.ok
-            ..headers.addAll(preCors)
+            ..headers.addAll(cors ?? {})
             ..close();
           return;
         }

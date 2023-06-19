@@ -91,7 +91,6 @@ abstract class Controller {
               .where((metadataMirror) => metadataMirror.reflectee is Param)
               .first
               .reflectee as Param);
-      print(paramMetaData);
 
       for (var route in pathMethodMap.keys) {
         final params = paramMetaData.first.params;
@@ -265,6 +264,7 @@ abstract class Controller {
 
       if (instanceMirror != null) {
         final response = await instanceMirror.reflectee as Response;
+
         response.send(request.app!, payload);
         return;
       }

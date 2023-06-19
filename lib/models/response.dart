@@ -104,8 +104,7 @@ class Response {
   /// Sends the response to the client.
   void send(HttpRequest request, [Map<String, dynamic>? payload]) {
     request.response.headers
-      ..addAll(headers ?? {})
-      ..addAll(payload?['cors'] ?? {});
+        .addAll({...headers ?? {}, ...payload?['cors'] ?? {}});
 
     final data = headers?['Content-Type'] == 'application/json'
         ? jsonEncode(body)
